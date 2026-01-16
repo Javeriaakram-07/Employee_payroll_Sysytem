@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Directory | Payroll System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-slate-100 min-h-screen p-6 md:p-12 flex flex-col items-center"
+  >
+    <h1
+      class="text-3xl font-extrabold text-[#0d1b2a] uppercase tracking-tighter mb-8 text-center"
+    >
+      Employee Payroll System
+    </h1>
+
+    <div class="w-full max-w-6xl">
+      <div
+        class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4"
+      >
+        <button
+          id="fetchBtn"
+          class="bg-[#0d1b2a] hover:bg-[#1b263b] text-white px-8 py-3 rounded-lg font-semibold shadow-md transition-all active:scale-95"
+        >
+          Load Employee Data
+        </button>
+        <button
+          onclick="location.href='dashboard.html'"
+          class="text-[#0d1b2a] font-semibold hover:underline"
+        >
+          ← Back to Dashboard
+        </button>
+      </div>
+
+      <div
+        class="bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden"
+      >
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr
+                class="bg-[#0d1b2a] text-white text-sm uppercase tracking-wider"
+              >
+                <th class="px-6 py-4 text-left font-bold">ID</th>
+                <th class="px-6 py-4 text-left font-bold">Employee Name</th>
+                <th class="px-6 py-4 text-left font-bold">Email Address</th>
+                <th class="px-6 py-4 text-left font-bold">Department</th>
+                <th class="px-6 py-4 text-left font-bold">Job Title</th>
+                <th class="px-6 py-4 text-left font-bold">Manager</th>
+              </tr>
+            </thead>
+            <tbody
+              id="employeeTable"
+              class="divide-y divide-slate-100 text-slate-700"
+            >
+              <tr id="placeholder-row">
+                <td
+                  colspan="6"
+                  class="px-6 py-12 text-center text-slate-400 italic"
+                >
+                  No data loaded. Click "Load Employee Data" to begin.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="mt-6 text-center text-slate-500 text-sm">
+        Confidential Payroll Information &copy; 2026
+      </p>
+    </div>
+
+    <script type="module">
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+      // Configuration
+      const SUPABASE_URL = "https://vknwznfpuzxgzmgxvxvi.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbnd6bmZwdXp4Z3ptZ3h2eHZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0OTM5ODgsImV4cCI6MjA4NDA2OTk4OH0.Y7wX5fHQH_5jiUK5g7O8XanlsMDBqsOarmJA_aTTmxU";
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      const fetchBtn = document.getElementById("fetchBtn");
+      const tbody = document.getElementById("employeeTable");
+
+      async function loadEmployees() {
+        // UI Feedback
+        fetchBtn.innerText = "Fetching...";
+        fetchBtn.disabled = true;
+        tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center text-[#0d1b2a] font-medium animate-pulse">Retrieving secure data...</td></tr>`;
+
+        const { data, error } = await supabase
+          .from("vw_employee_contact_directory")
+          .select("*");
+
+        if (error) {
+          alert("Error: " + error.message);
+          fetchBtn.innerText = "Load Employee Data";
+          fetchBtn.disabled = false;
+          return;
+        }
+
+        tbody.innerHTML = ""; // Clear status message
+
+        if (data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-12 text-center">No employee records found.</td></tr>`;
+        } else {
+          data.forEach((emp) => {
+            const row = `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 text-sm font-bold text-slate-900">${
+                              emp.emp_id
+                            }</td>
+                            <td class="px-6 py-4 text-sm">${emp.emp_name}</td>
+                            <td class="px-6 py-4 text-sm text-blue-600">${
+                              emp.email
+                            }</td>
+                            <td class="px-6 py-4 text-sm">${emp.dept_name}</td>
+                            <td class="px-6 py-4 text-sm font-medium">${
+                              emp.job_title
+                            }</td>
+                            <td class="px-6 py-4 text-sm text-slate-500">${
+                              emp.department_manager || "-"
+                            }</td>
+                        </tr>
+                    `;
+            tbody.insertAdjacentHTML("beforeend", row);
+          });
+        }
+
+        fetchBtn.innerText = "Refresh Data";
+        fetchBtn.disabled = false;
+      }
+
+      // Event listener for the Load Data button
+      fetchBtn.addEventListener("click", loadEmployees);
+    </script>
+  </body>
+</html>

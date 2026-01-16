@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Allowance Management | Payroll System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-slate-100 min-h-screen p-8 flex flex-col items-center">
+    <h1 class="text-3xl font-extrabold text-[#0a2643] uppercase mb-8">
+      Allowance Management
+    </h1>
+
+    <div class="w-full max-w-6xl space-y-10">
+      <!-- ================= ALLOWANCE MASTER ================= -->
+      <section class="bg-white rounded-xl shadow-lg border p-6">
+        <h2 class="text-xl font-bold text-[#0a2643] mb-4">Allowance Types</h2>
+
+        <!-- Add Allowance -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <input
+            id="allowType"
+            placeholder="Allowance Type"
+            class="border px-4 py-2 rounded-lg"
+          />
+
+          <input
+            id="allowDesc"
+            placeholder="Description"
+            class="border px-4 py-2 rounded-lg"
+          />
+
+          <button
+            onclick="addAllowance()"
+            class="bg-[#0a2643] text-white rounded-lg px-6 py-2 font-semibold hover:bg-[#163a5f]"
+          >
+            Add Allowance
+          </button>
+        </div>
+
+        <!-- Allowance Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-[#0a2643] text-white">
+                <th class="p-3 text-left">ID</th>
+                <th class="p-3 text-left">Type</th>
+                <th class="p-3 text-left">Description</th>
+                <th class="p-3 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="allowanceTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ================= ASSIGN ALLOWANCE ================= -->
+      <section class="bg-white rounded-xl shadow-lg border p-6">
+        <h2 class="text-xl font-bold text-[#0a2643] mb-4">
+          Assign Allowance to Employee
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <input
+            id="empId"
+            type="number"
+            placeholder="Employee ID"
+            class="border px-4 py-2 rounded-lg"
+          />
+
+          <input
+            id="assignAllowId"
+            type="number"
+            placeholder="Allowance ID"
+            class="border px-4 py-2 rounded-lg"
+          />
+
+          <input
+            id="amount"
+            type="number"
+            placeholder="Amount"
+            class="border px-4 py-2 rounded-lg"
+          />
+
+          <button
+            onclick="assignAllowance()"
+            class="bg-[#0a2643] text-white rounded-lg px-6 py-2 font-semibold hover:bg-[#163a5f]"
+          >
+            Assign
+          </button>
+        </div>
+
+        <p id="msg" class="mt-3 text-sm"></p>
+      </section>
+
+      <div class="text-center">
+        <button
+          onclick="location.href='dashboard.html'"
+          class="text-[#0a2643] font-semibold hover:underline"
+        >
+          ← Back to Dashboard
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= SCRIPT ================= -->
+    <script type="module">
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+      const supabase = createClient(
+        "https://vknwznfpuzxgzmgxvxvi.supabase.co",
+
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbnd6bmZwdXp4Z3ptZ3h2eHZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0OTM5ODgsImV4cCI6MjA4NDA2OTk4OH0.Y7wX5fHQH_5jiUK5g7O8XanlsMDBqsOarmJA_aTTmxU"
+      );
+
+      const table = document.getElementById("allowanceTable");
+      const msg = document.getElementById("msg");
+
+      /* ---------- LOAD ALLOWANCES ---------- */
+      async function loadAllowances() {
+        const { data, error } = await supabase
+          .from("allowance")
+          .select("*")
+          .order("allow_id");
+
+        table.innerHTML = "";
+
+        if (error) {
+          table.innerHTML = `<tr><td colspan="4" class="text-red-500 p-4">${error.message}</td></tr>`;
+          return;
+        }
+
+        data.forEach((a) => {
+          table.insertAdjacentHTML(
+            "beforeend",
+            `
+                  <tr class="border-b hover:bg-slate-50">
+                      <td class="p-3">${a.allow_id}</td>
+                      <td class="p-3">${a.allow_type}</td>
+                      <td class="p-3">${a.description || "-"}</td>
+                      <td class="p-3 text-center">
+                          <button onclick="deleteAllowance(${a.allow_id})"
+                              class="text-red-600 font-semibold hover:underline">
+                              Delete
+                          </button>
+                      </td>
+                  </tr>
+              `
+          );
+        });
+      }
+
+      loadAllowances();
+
+      /* ---------- ADD ALLOWANCE ---------- */
+      window.addAllowance = async () => {
+        const type = allowType.value.trim();
+        const desc = allowDesc.value.trim();
+
+        if (!type) {
+          alert("Allowance type required");
+          return;
+        }
+
+        const { error } = await supabase
+          .from("allowance")
+          .insert({ allow_type: type, description: desc });
+
+        if (error) alert(error.message);
+        else loadAllowances();
+      };
+
+      /* ---------- DELETE ALLOWANCE ---------- */
+      window.deleteAllowance = async (id) => {
+        if (!confirm("Delete this allowance?")) return;
+
+        const { error } = await supabase
+          .from("allowance")
+          .delete()
+          .eq("allow_id", id);
+
+        if (error) alert(error.message);
+        else loadAllowances();
+      };
+
+      /* ---------- ASSIGN ALLOWANCE ---------- */
+      window.assignAllowance = async () => {
+        const empId = document.getElementById("empId").value.trim();
+        const allowId = document.getElementById("assignAllowId").value.trim();
+        const amount = document.getElementById("amount").value.trim();
+
+        msg.textContent = "";
+        msg.className = "mt-3 text-sm";
+
+        if (!empId || !allowId || !amount) {
+          msg.textContent = "All fields are required";
+          msg.classList.add("text-red-600");
+          return;
+        }
+
+        const { error } = await supabase.from("employee_allowance").insert({
+          emp_id: Number(empId),
+          allow_id: Number(allowId),
+          amount: Number(amount),
+        });
+
+        if (error) {
+          msg.textContent = error.message;
+          msg.classList.add("text-red-600");
+        } else {
+          msg.textContent = "Allowance successfully assigned to employee";
+          msg.classList.add("text-green-600");
+
+          // clear inputs
+          document.getElementById("empId").value = "";
+          document.getElementById("assignAllowId").value = "";
+          document.getElementById("amount").value = "";
+        }
+      };
+    </script>
+  </body>
+</html>

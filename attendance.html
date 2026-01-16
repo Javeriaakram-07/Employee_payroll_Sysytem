@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Attendance | Payroll System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-slate-100 min-h-screen p-6 md:p-12 flex flex-col items-center"
+  >
+    <h1
+      class="text-3xl font-extrabold text-[#0d1b2a] uppercase tracking-tighter mb-8 text-center"
+    >
+      Employee Attendance
+    </h1>
+
+    <div class="w-full max-w-6xl">
+      <div
+        class="flex flex-col md:flex-row items-center justify-between mb-6 gap-4"
+      >
+        <div
+          class="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto"
+        >
+          <input
+            id="empId"
+            type="number"
+            placeholder="Employee ID"
+            class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0d1b2a] outline-none w-full md:w-40 shadow-sm"
+          />
+
+          <input
+            id="monthYear"
+            type="month"
+            class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#0d1b2a] outline-none w-full md:w-48 shadow-sm"
+          />
+
+          <button
+            id="getAttendanceBtn"
+            class="px-6 py-2 bg-[#0d1b2a] text-white font-semibold rounded-lg hover:bg-[#1b263b] transition shadow-md active:scale-95"
+          >
+            Get Attendance
+          </button>
+        </div>
+
+        <button
+          onclick="location.href='dashboard.html'"
+          class="text-[#0d1b2a] font-semibold hover:underline flex items-center gap-1"
+        >
+          ← Back to Dashboard
+        </button>
+      </div>
+
+      <div
+        class="bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden"
+      >
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr
+                class="bg-[#0d1b2a] text-white text-sm uppercase tracking-wider"
+              >
+                <th class="px-6 py-4 text-left font-bold">ID</th>
+                <th class="px-6 py-4 text-left font-bold">Employee Name</th>
+                <th class="px-6 py-4 text-left font-bold">Department</th>
+                <th class="px-6 py-4 text-left font-bold">Job Title</th>
+                <th class="px-6 py-4 text-left font-bold">Month/Year</th>
+                <th class="px-6 py-4 text-center font-bold">Present</th>
+                <th class="px-6 py-4 text-center font-bold">Absent</th>
+                <th class="px-6 py-4 text-center font-bold">Leave</th>
+              </tr>
+            </thead>
+            <tbody
+              id="attendanceTable"
+              class="divide-y divide-slate-100 text-slate-700"
+            >
+              <tr>
+                <td
+                  colspan="8"
+                  class="px-6 py-12 text-center text-slate-400 italic"
+                >
+                  Please enter details and click "Get Attendance" to load
+                  records.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="mt-6 text-center text-slate-500 text-sm italic">
+        Note: Leave calculations are subject to HR approval.
+      </p>
+    </div>
+
+    <script type="module">
+      import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+      const SUPABASE_URL = "https://vknwznfpuzxgzmgxvxvi.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbnd6bmZwdXp4Z3ptZ3h2eHZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0OTM5ODgsImV4cCI6MjA4NDA2OTk4OH0.Y7wX5fHQH_5jiUK5g7O8XanlsMDBqsOarmJA_aTTmxU";
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      const btn = document.getElementById("getAttendanceBtn");
+
+      async function loadAttendance() {
+        const empId = document.getElementById("empId").value;
+        const monthYear = document.getElementById("monthYear").value; // "YYYY-MM"
+
+        if (!empId || !monthYear) {
+          alert("Please provide Employee ID and Month/Year");
+          return;
+        }
+
+        // Convert YYYY-MM to first day of month: YYYY-MM-01
+        const firstDayOfMonth = monthYear + "-01";
+
+        btn.innerText = "Loading...";
+        btn.disabled = true;
+
+        // Call the function with the correct parameter names from your function
+        const { data, error } = await supabase.rpc(
+          "fn_employee_monthly_attendance",
+          {
+            p_emp_id: parseInt(empId),
+            p_month: firstDayOfMonth,
+          }
+        );
+
+        if (error) {
+          alert(error.message);
+          btn.innerText = "Get Attendance";
+          btn.disabled = false;
+          return;
+        }
+
+        const tbody = document.getElementById("attendanceTable");
+        tbody.innerHTML = "";
+
+        if (!data || data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="8" class="px-6 py-12 text-center">No attendance records found for this period.</td></tr>`;
+        } else {
+          data.forEach((a) => {
+            const row = `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 text-sm font-bold text-slate-900">${a.emp_id}</td>
+                    <td class="px-6 py-4 text-sm">${a.emp_name}</td>
+                    <td class="px-6 py-4 text-sm">${a.dept_name}</td>
+                    <td class="px-6 py-4 text-sm">${a.job_title}</td>
+                    <td class="px-6 py-4 text-sm font-medium">${a.month_year}</td>
+                    <td class="px-6 py-4 text-sm text-center font-semibold text-green-600">${a.total_present}</td>
+                    <td class="px-6 py-4 text-sm text-center font-semibold text-red-600">${a.total_absent}</td>
+                    <td class="px-6 py-4 text-sm text-center font-semibold text-orange-600">${a.total_leave}</td>
+                </tr>
+            `;
+            tbody.insertAdjacentHTML("beforeend", row);
+          });
+        }
+
+        btn.innerText = "Get Attendance";
+        btn.disabled = false;
+      }
+
+      btn.addEventListener("click", loadAttendance);
+    </script>
+  </body>
+</html>

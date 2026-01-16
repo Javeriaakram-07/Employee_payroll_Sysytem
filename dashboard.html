@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Payroll Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&display=swap" rel="stylesheet">
+
+</head>
+<body style="margin:0; font-family: Arial, sans-serif; background:#f0f2f5; display:flex; flex-direction:column; align-items:center; height: 100%;width: 100%;">
+    
+
+ <h1 style="
+    margin-top:10vh;
+    color:#0a2643;
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    font-weight:bold;
+    text-align:center;
+    line-height:1.2;
+    max-width:90%;
+    word-wrap: break-word;
+">
+    Employee Payroll Dashboard
+</h1>
+
+
+
+
+
+
+<!-- Logout Button -->
+<!-- Logout Button -->
+<button 
+  onclick="logout()"
+  style="
+    position: absolute;
+    top: 3vh;
+    right: 5vw;
+    background: transparent;
+    color: 0a2643;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    padding: 5px 10px;
+    overflow: hidden;
+  "
+  onmouseenter="this.querySelector('.underline').style.width='100%';"
+  onmouseleave="this.querySelector('.underline').style.width='0';"
+>
+  Logout 
+  <span class="underline" style="
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 0;
+    background: #0a2643;
+    transition: width 0.3s;
+  "></span>
+</button>
+
+<script>
+function logout() {
+  // Redirect to index.html (login page)
+  window.location.href = "index.html";
+}
+</script>
+
+
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:30px; width:90%; max-width:1000px; margin-top:50px;">
+    
+    <a href="employee.html" style="text-decoration:none;">
+      <div style="background:#0a2643; color:white; padding:50px; text-align:center;height: 8vh; border-radius:12px; cursor:pointer;align-items: center; font-size:18px; font-weight:bold; transition: transform 0.2s;">
+        Employee Details
+      </div>
+    </a>
+
+    <a href="attendance.html" style="text-decoration:none;">
+      <div style="background:#0a2643; color:white; padding:50px; text-align:center;height: 8vh; border-radius:12px; cursor:pointer;align-content: center; font-size:18px; font-weight:bold; transition: transform 0.2s;">
+        Attendance
+      </div>
+    </a>
+
+    <a href="payroll.html" style="text-decoration:none;">
+      <div style="background:#0a2643; color:white; padding:50px; text-align:center; border-radius:12px; cursor:pointer;align-content: center; font-size:18px;height: 8vh; font-weight:bold; transition: transform 0.2s;">
+        Payroll
+      </div>
+    </a>
+
+    <a href="allowance.html" style="text-decoration:none;">
+      <div style="background:#0a2643; color:white; padding:50px; text-align:center; border-radius:12px; cursor:pointer;align-content: center; font-size:18px; height: 8vh;font-weight:bold; transition: transform 0.2s;">
+        Allowances
+      </div>
+    </a>
+
+    <a href="deduction.html" style="text-decoration:none;">
+      <div style="background:#0a2643; color:white; padding:50px; text-align:center; border-radius:12px; cursor:pointer;align-content: center; font-size:18px;height: 8vh; font-weight:bold; transition: transform 0.2s;">
+        Deductions
+      </div>
+    <a href="password.html" style="text-decoration:none;">
+      <div style="background:#0a2643; color:white; padding:50px; text-align:center; border-radius:12px; cursor:pointer;align-items: center; font-size:18px; font-weight:bold;height: 8vh; transition: transform 0.2s;">
+        Change Password
+      </div>
+    </a>
+
+  </div>
+
+  <script>
+    // Add simple hover effect
+    document.querySelectorAll('div[style*="cursor:pointer"]').forEach(box => {
+      box.addEventListener('mouseover', () => { box.style.transform = 'scale(1.05)'; });
+      box.addEventListener('mouseout', () => { box.style.transform = 'scale(1)'; });
+    });
+  </script>
+
+
+
+
+</html>
