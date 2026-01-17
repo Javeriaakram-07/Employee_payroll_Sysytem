@@ -129,6 +129,7 @@ body {
      .login-wrapper {
     width: 86%;
     margin: 0 0;
+    padding-left: .3rem;
     padding-bottom: 2rem;
     display: flex;
     flex-direction: column;
@@ -138,6 +139,7 @@ body {
 .login-box{
     padding: clamp(1rem, 5vw, 2.5rem) !important;
     margin-left: .4rem;
+    
 }
 
    
