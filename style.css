@@ -1,0 +1,57 @@
+/* ---------- GLOBAL SCALE (safe, minimal) ---------- */
+@media (max-width: 640px) {
+
+  /* Heading */
+  h1 {
+    font-size: clamp(1.4rem, 5vw, 2.4rem) !important;
+    padding: clamp(0.5vh, 1.5vh, 2vh) !important;
+    margin-bottom: clamp(.5rem, 4vw, 2.5rem)!important;
+    text-align: center !important;
+  }
+
+  /* Card */
+  #passwordForm {
+    max-width: clamp(22rem, 92vw, 28rem);
+    padding: clamp(.3rem, 3vw, 2rem) !important;
+  }
+
+  /* Labels */
+  label {
+    font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+  }
+
+  /* Inputs */
+  input {
+    font-size: clamp(1rem, 4vw, 1.15rem);
+    padding: clamp(0.7rem, 3.5vw, 0.95rem) clamp(1rem, 4vw, 1.2rem);
+  }
+
+  /* Button */
+  #updateBtn {
+    font-size: clamp(1rem, 4vw, 1.2rem);
+    padding: clamp(0.75rem, 4vw, 1rem);
+  }
+
+  /* Message text */
+  #msg {
+    font-size: clamp(0.85rem, 3.5vw, 1rem);
+  }
+
+  /* Back button */
+  .text-center button {
+    font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+  }
+ 
+  body{
+    display: flex;
+justify-content: center;
+align-items: center;
+  }
+  
+  
+}
+body{
+    display: flex !important;
+justify-content: center !important;
+align-items: center !important;
+}
