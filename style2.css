@@ -11,13 +11,25 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+  background-image: url('emp.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+
 }
 
 .login-wrapper {
-    width: 100%;
+    width: 90%;
     max-width: 400px;
     text-align: center;
-    margin-left: .5rem;
+    margin: 4rem;
 }
 
 /* Heading outside the card */
@@ -114,6 +126,31 @@ body {
         background-image: url(empmobile.jpeg) !important;
     }
    
-    
+     .login-wrapper {
+    width: 86%;
+    margin: 0 0;
+    padding-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+  }
+.login-box{
+    padding: clamp(1rem, 5vw, 2.5rem) !important;
+    margin-left: .3rem;
+}
+
+   
+
+.main-heading {
+    color: #ffffff; /* Darker Navy Blue */
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-weight: bold;
+    font-weight: 700;
+    margin: 2rem !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+}
     
 }
