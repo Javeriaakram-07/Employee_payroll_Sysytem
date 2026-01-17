@@ -17,7 +17,7 @@ body {
   justify-content: center;
   align-items: center;
   font-family: 'Arial', sans-serif;
-  background-image: url('emp.jpeg');
+  background-image: url('emppc.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -34,7 +34,7 @@ body {
 
 /* Heading outside the card */
 .main-heading {
-    color: #ffffff; /* Darker Navy Blue */
+    color: #0d1b2a; /* Darker Navy Blue */
     font-size: clamp(1.5rem, 5vw, 2.5rem);
     font-weight: 700;
     margin-bottom: 25px;
@@ -118,7 +118,7 @@ body {
 .footer {
     margin-top: 20px;
     font-size: 12px;
-    color: #888;
+    color: #ffffff;
 }
 
 @media (max-width: 640px) {
